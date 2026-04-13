@@ -25,21 +25,32 @@ there for when you want real Claude.
 
 ## Install the extension
 
-You need **Node ≥ 20.10** and `pnpm` (or npm / yarn — any works).
-
-```bash
-cd claude-extension-standalone
-pnpm install        # or: npm install
-pnpm build          # or: npm run build
-```
+**Fast path — no build needed.** This repo ships a pre-built `dist/` folder.
 
 1. Open `chrome://extensions`.
 2. Enable **Developer mode** (top-right).
 3. Click **Load unpacked** and select `claude-extension-standalone/dist`.
 4. Pin the extension to the toolbar.
 
-Icons: put `icon-16.png`, `icon-32.png`, `icon-48.png`, `icon-128.png` into
-`icons/` before building (any square PNGs — see `icons/README.md`).
+> Select the `dist` folder, **not** `claude-extension-standalone` itself.
+> The top-level folder contains TypeScript source that Chrome cannot load directly —
+> that's the cause of "Could not load icon 'icons/icon-16.png'" errors.
+
+### Rebuild from source (optional)
+
+If you edit the code, rebuild with:
+
+```bash
+cd claude-extension-standalone
+pnpm install --ignore-workspace   # or: npm install
+pnpm build                        # or: npm run build
+```
+
+Then click the reload button on `chrome://extensions`.
+
+Icons live in `icons/` (`icon-16.png`, `icon-32.png`, `icon-48.png`,
+`icon-128.png`). Replace them with your own before building if you want a
+different glyph.
 
 ## First run — pick your backend
 
