@@ -1,0 +1,30 @@
+{
+  "name": "claude-code",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Terminal coding assistant with agent mode, file I/O, shell execution, web browsing, and session persistence.",
+  "bin": {
+    "claude-code": "./dist/cli.js"
+  },
+  "main": "./dist/cli.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "start": "node --enable-source-maps dist/cli.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "echo \"(no tests)\" && exit 0",
+    "lint": "echo \"(no lint)\" && exit 0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.1",
+    "@claude-eco/shared": "workspace:*",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.5",
+    "ignore": "^6.0.2",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/prompts": "^2.4.9"
+  }
+}

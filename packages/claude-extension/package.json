@@ -1,0 +1,26 @@
+{
+  "name": "claude-extension",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Claude browser extension — sidepanel + popup + options with page-aware AI actions.",
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "echo \"(no tests)\" && exit 0",
+    "lint": "echo \"(no lint)\" && exit 0"
+  },
+  "dependencies": {
+    "@claude-eco/shared": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.0.0-beta.28",
+    "@types/chrome": "^0.0.270",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "vite": "^5.4.8"
+  }
+}
