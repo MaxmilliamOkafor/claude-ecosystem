@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "Claude (Standalone)",
+  "version": "1.0.0",
+  "description": "Claude in your browser — standalone. Summarize, rewrite, explain, and act on the current page. Works with a local Ollama model by default (no key, no limits), or your Claude.ai tab, or an Anthropic API key.",
+  "minimum_chrome_version": "116",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "background": {
+    "service_worker": "src/background/service-worker.ts",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Open Claude",
+    "default_popup": "src/popup/index.html"
+  },
+  "side_panel": { "default_path": "src/sidepanel/index.html" },
+  "options_page": "src/options/index.html",
+  "permissions": [
+    "sidePanel",
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "tabs",
+    "notifications"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content/content-script.ts"],
+      "run_at": "document_idle"
+    }
+  ],
+  "commands": {
+    "toggle-side-panel": {
+      "suggested_key": { "default": "Ctrl+E", "mac": "Command+E" },
+      "description": "Toggle Claude side panel"
+    },
+    "summarize-page": {
+      "suggested_key": { "default": "Ctrl+Shift+S", "mac": "Command+Shift+S" },
+      "description": "Summarize the current page"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["src/content/content-script.ts"]
+    }
+  ]
+}

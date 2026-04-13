@@ -1,5 +1,9 @@
 node_modules/
 dist/
+# The standalone extension ships a pre-built dist/ so users can load-unpacked
+# directly after downloading the folder, without a build step.
+!claude-extension-standalone/dist/
+!claude-extension-standalone/dist/**
 build/
 .turbo/
 .cache/

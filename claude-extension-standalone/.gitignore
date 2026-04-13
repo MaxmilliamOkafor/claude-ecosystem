@@ -1,0 +1,7 @@
+node_modules/
+.vite/
+*.log
+.DS_Store
+# dist/ is intentionally committed so users can "Load unpacked" directly
+# after downloading this folder, without needing Node/pnpm installed.
+# Run `pnpm build` to regenerate it.

@@ -1,0 +1,3 @@
+(function(){chrome.runtime.onMessage.addListener((e,l,o)=>{var r;if((e==null?void 0:e.type)==="snapshot"){const n=(((r=window.getSelection())==null?void 0:r.toString())??"").trim(),t=document.body.cloneNode(!0);t.querySelectorAll("script, style, noscript, iframe, svg, canvas, video, audio").forEach(c=>c.remove());const i=(t.innerText||t.textContent||"").slice(0,2e4);return o({url:location.href,title:document.title,selection:n,text:i}),!0}if((e==null?void 0:e.type)==="replace-selection"){const n=window.getSelection();if(n&&n.rangeCount>0){const t=n.getRangeAt(0);t.deleteContents(),t.insertNode(document.createTextNode(String(e.text??""))),o({ok:!0})}else o({ok:!1,reason:"no_selection"});return!0}return!1});
+//# sourceMappingURL=content-script.ts-Bu6zqV4V.js.map
+})()

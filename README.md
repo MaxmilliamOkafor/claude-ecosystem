@@ -2,12 +2,13 @@
 
 A complete, production-ready Claude suite in one monorepo:
 
-| Package                       | What it is                                                                                                   |
-|-------------------------------|--------------------------------------------------------------------------------------------------------------|
-| `packages/shared`             | `@claude-eco/shared` — one Anthropic SDK client, canonical model list, persona prompts, logger, types.       |
-| `packages/claude-code`        | Terminal coding assistant with agent mode, file I/O, shell execution, live web browsing, sessions + memory.  |
-| `packages/claude-cowork`      | Chat + workspace + tasks web app. Streaming chat, autonomous multi-step agent, live browse, SQLite storage.  |
-| `packages/claude-extension`   | Manifest V3 browser extension: side panel, popup, options, context menu, commands, page-aware actions.       |
+| Package                             | What it is                                                                                                   |
+|-------------------------------------|--------------------------------------------------------------------------------------------------------------|
+| `packages/shared`                   | `@claude-eco/shared` — one Anthropic SDK client, canonical model list, persona prompts, logger, types.       |
+| `packages/claude-code`              | Terminal coding assistant with agent mode, file I/O, shell execution, live web browsing, sessions + memory.  |
+| `packages/claude-cowork`            | Chat + workspace + tasks web app. Streaming chat, autonomous multi-step agent, live browse, SQLite storage.  |
+| `packages/claude-extension`         | Manifest V3 browser extension, integrated with the monorepo (uses the shared client + Cowork backend).       |
+| **`claude-extension-standalone/`**  | **Self-contained version of the extension** — no monorepo deps, no Cowork needed, ships with a local-model (Ollama) backend so it works with no API key and no usage cap. See its [README](./claude-extension-standalone/README.md). |
 
 All three surfaces share **one** model list (Opus 4.6 default, with Sonnet 4.6 and Haiku 4.5 available) and **one** Anthropic client, so switching models is seamless across the CLI, the web app, and the browser.
 
