@@ -226,4 +226,13 @@ function Options() {
   );
 }
 
-createRoot(document.getElementById("root")!).render(<Options />);
+const mountNode = document.getElementById("root");
+if (!mountNode) {
+  document.body.innerHTML = '<div style="padding:12px;color:#e6e9f2;background:#0f1115;font-family:sans-serif">Claude options failed to find #root</div>';
+} else {
+  try {
+    createRoot(mountNode).render(<Options />);
+  } catch (err) {
+    mountNode.innerHTML = `<div style="padding:12px;color:#ffb4b4;font-family:sans-serif">Claude options crashed: ${(err as Error).message}</div>`;
+  }
+}

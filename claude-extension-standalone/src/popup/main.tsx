@@ -80,4 +80,14 @@ function Popup() {
   );
 }
 
-createRoot(document.getElementById("root")!).render(<Popup />);
+const mountNode = document.getElementById("root");
+if (!mountNode) {
+  // Visible fallback in case something catastrophic prevents React from mounting.
+  document.body.innerHTML = '<div style="padding:12px;color:#e6e9f2;background:#0f1115;font-family:sans-serif">Claude popup failed to find #root</div>';
+} else {
+  try {
+    createRoot(mountNode).render(<Popup />);
+  } catch (err) {
+    mountNode.innerHTML = `<div style="padding:12px;color:#ffb4b4;font-family:sans-serif">Claude popup crashed: ${(err as Error).message}</div>`;
+  }
+}
