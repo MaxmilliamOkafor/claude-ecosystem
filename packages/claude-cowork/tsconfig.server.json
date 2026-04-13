@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "types": ["node"],
+    "jsx": "preserve",
+    "composite": false,
+    "noEmit": false
+  },
+  "include": ["server/**/*.ts", "shared/**/*.ts"],
+  "exclude": ["web", "dist", "node_modules"]
+}
