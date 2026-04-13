@@ -1,2 +1,4 @@
 packages:
   - "packages/*"
+  # claude-extension-standalone/ is intentionally excluded so it can be built
+  # and distributed on its own, with no workspace dependencies.
