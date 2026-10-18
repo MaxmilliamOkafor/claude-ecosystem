@@ -1,1 +1,1 @@
-import './assets/service-worker.ts-BL8YZO9_.js';
+import './assets/service-worker.ts-rW0mxJPM.js';
