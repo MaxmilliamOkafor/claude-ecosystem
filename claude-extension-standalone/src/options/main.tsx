@@ -184,6 +184,15 @@ function Options() {
         />
       </div>
 
+      <label className="row">
+        <input
+          type="checkbox"
+          checked={s.blockLeavePrompts}
+          onChange={(e) => setS({ ...s, blockLeavePrompts: e.target.checked })}
+        />
+        Block "Leave site? Changes you made may not be saved." prompts
+      </label>
+
       <div className="row">
         <button className="primary" onClick={save}>
           {saved ? "Saved ✓" : "Save"}

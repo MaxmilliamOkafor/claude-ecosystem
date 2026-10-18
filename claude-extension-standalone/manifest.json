@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Claude (Standalone)",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Claude in your browser — standalone. Summarize, rewrite, explain, and act on the current page. Works with a local Ollama model by default (no key, no limits), or your Claude.ai tab, or an Anthropic API key.",
   "minimum_chrome_version": "116",
   "icons": {

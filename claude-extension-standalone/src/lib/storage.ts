@@ -19,6 +19,9 @@ export interface ExtSettings {
 
   /** Per-site disable list. */
   disabledHosts: string[];
+
+  /** Suppress "Leave site? Changes you made may not be saved." prompts. */
+  blockLeavePrompts: boolean;
 }
 
 export const DEFAULTS: ExtSettings = {
@@ -30,6 +33,7 @@ export const DEFAULTS: ExtSettings = {
   anthropicMaxTokens: 1024,
   systemAddendum: "",
   disabledHosts: [],
+  blockLeavePrompts: true,
 };
 
 const KEY = "claude-ext-settings";
