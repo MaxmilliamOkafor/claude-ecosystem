@@ -1,0 +1,4 @@
+async function o(){const[t]=await chrome.tabs.query({active:!0,currentWindow:!0});if(!(t!=null&&t.id)||!t.url||!/^https?:/.test(t.url))return{url:t==null?void 0:t.url,title:t==null?void 0:t.title};try{const[{result:e}]=await chrome.scripting.executeScript({target:{tabId:t.id},func:i});return{url:t.url,title:t.title,selection:e==null?void 0:e.selection,text_snapshot:e==null?void 0:e.text}}catch{return{url:t.url,title:t.title}}}function i(){var n;const t=(((n=window.getSelection())==null?void 0:n.toString())??"").trim(),e=document.body.cloneNode(!0);e.querySelectorAll("script, style, noscript, iframe, svg, canvas, video, audio").forEach(c=>c.remove());const r=(e.innerText||e.textContent||"").replace(/\n{3,}/g,`
+
+`).slice(0,2e4);return{selection:t,text:r}}export{o as c};
+//# sourceMappingURL=page-reader-DuYkjq2L.js.map

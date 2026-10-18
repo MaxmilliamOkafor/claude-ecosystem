@@ -15,6 +15,7 @@ import {
   type ExtSettings,
   type HistoryEntry,
 } from "../lib/storage.js";
+import { WorkdaySettings } from "./WorkdaySettings.js";
 
 function Options() {
   const [s, setS] = useState<ExtSettings>(DEFAULTS);
@@ -190,6 +191,10 @@ function Options() {
         </button>
         <button onClick={() => setS(DEFAULTS)}>Reset to defaults</button>
       </div>
+
+      <hr />
+
+      <WorkdaySettings />
 
       <hr />
 

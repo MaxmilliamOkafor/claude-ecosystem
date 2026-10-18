@@ -67,6 +67,41 @@ export async function ask(prompt: string, page: PageContext = {}): Promise<AskRe
   return result;
 }
 
+export interface CompleteOptions {
+  /** Replaces the side-panel system prompt entirely. */
+  system?: string;
+  /** Ask the backend for a JSON object (Ollama `format: "json"`). */
+  json?: boolean;
+  maxTokens?: number;
+}
+
+/**
+ * Raw completion for programmatic callers (e.g. the Workday autopilot): own
+ * system prompt, no page context, not written to history. The Claude.ai tab
+ * backend can't return text in-extension, so it is rejected here.
+ */
+export async function complete(prompt: string, opts: CompleteOptions = {}): Promise<string> {
+  const s = await getSettings();
+  if (s.backend === "claudeai") {
+    throw new Error(
+      "This feature needs a backend that returns text in the extension. Switch to Ollama (local) or the Anthropic API in Settings."
+    );
+  }
+  const r =
+    s.backend === "ollama" ? await askOllama(prompt, {}, s, opts) : await askAnthropic(prompt, {}, s, opts);
+  return r.reply;
+}
+
+/** Extract the first JSON object from a model reply. */
+export function parseJsonReply<T>(reply: string): T {
+  const fenced = reply.match(/```(?:json)?\s*([\s\S]*?)```/);
+  const body = fenced ? fenced[1] : reply;
+  const start = body.indexOf("{");
+  const end = body.lastIndexOf("}");
+  if (start < 0 || end <= start) throw new Error("Model reply contained no JSON object");
+  return JSON.parse(body.slice(start, end + 1)) as T;
+}
+
 /* -------------------- OLLAMA (default, no key, no limits) -------------------- */
 
 /**
@@ -78,12 +113,18 @@ export async function ask(prompt: string, page: PageContext = {}): Promise<AskRe
  * Install Ollama once: https://ollama.com/download
  * Then pull a model:   ollama pull llama3.2
  */
-async function askOllama(prompt: string, page: PageContext, s: ExtSettings): Promise<AskResult> {
+async function askOllama(
+  prompt: string,
+  page: PageContext,
+  s: ExtSettings,
+  opts: CompleteOptions = {}
+): Promise<AskResult> {
   const url = s.ollamaUrl.replace(/\/$/, "") + "/api/chat";
-  const system = buildSystem(s, page);
+  const system = opts.system ?? buildSystem(s, page);
   const body = {
     model: s.model,
     stream: false,
+    ...(opts.json ? { format: "json" } : {}),
     messages: [
       { role: "system", content: system },
       { role: "user", content: prompt },
@@ -143,13 +184,18 @@ async function askClaudeAi(prompt: string, page: PageContext): Promise<AskResult
 
 /* -------------------- ANTHROPIC API (BYO key) -------------------- */
 
-async function askAnthropic(prompt: string, page: PageContext, s: ExtSettings): Promise<AskResult> {
+async function askAnthropic(
+  prompt: string,
+  page: PageContext,
+  s: ExtSettings,
+  opts: CompleteOptions = {}
+): Promise<AskResult> {
   if (!s.anthropicApiKey) {
     throw new Error(
       "Anthropic mode requires an API key. Paste one in the options page, or switch to Ollama (local, no key)."
     );
   }
-  const system = buildSystem(s, page);
+  const system = opts.system ?? buildSystem(s, page);
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
@@ -160,7 +206,7 @@ async function askAnthropic(prompt: string, page: PageContext, s: ExtSettings): 
     },
     body: JSON.stringify({
       model: s.model,
-      max_tokens: s.anthropicMaxTokens,
+      max_tokens: opts.maxTokens ?? s.anthropicMaxTokens,
       system,
       messages: [{ role: "user", content: prompt }],
     }),

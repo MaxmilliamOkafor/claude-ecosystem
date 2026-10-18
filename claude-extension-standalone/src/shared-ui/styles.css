@@ -37,3 +37,6 @@ textarea { min-height: 80px; resize: vertical; font-family: ui-monospace, Menlo,
 .badge.anthropic { background: #17252a; color: #7cd0dc; }
 hr { border: 0; border-top: 1px solid var(--border); margin: 10px 0; }
 .actions button { flex: 1; min-width: 0; }
+.tabs button { flex: 1; }
+details summary { cursor: pointer; }
+input[type="file"] { padding: 4px; }

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Claude (Standalone)",
   "version": "1.0.0",
-  "description": "Claude in your browser — standalone. Summarize, rewrite, explain, and act on the current page. Works with a local Ollama model by default (no key, no limits), or your Claude.ai tab, or an Anthropic API key.",
+  "description": "Claude in your browser — standalone. Summarize, rewrite, explain, and act on the current page, plus a Workday ATS autopilot (sign-in, multi-page autofill, JD-tailored CV/cover letter). Works with a local Ollama model by default, your Claude.ai tab, or an Anthropic API key.",
   "minimum_chrome_version": "116",
   "icons": {
     "16": "icons/icon-16.png",
@@ -43,6 +43,19 @@
         "<all_urls>"
       ],
       "run_at": "document_idle"
+    },
+    {
+      "js": [
+        "assets/workday.ts-loader-D-D3dka-.js"
+      ],
+      "matches": [
+        "https://*.myworkdayjobs.com/*",
+        "https://*.myworkdaysite.com/*",
+        "https://*.myworkday.com/*",
+        "https://*.workdayjobs.com/*"
+      ],
+      "run_at": "document_idle",
+      "all_frames": true
     }
   ],
   "commands": {
@@ -72,6 +85,32 @@
         "assets/content-script.ts-Bu6zqV4V.js.map"
       ],
       "use_dynamic_url": false
+    },
+    {
+      "matches": [
+        "https://*.myworkday.com/*",
+        "https://*.myworkdayjobs.com/*",
+        "https://*.myworkdaysite.com/*",
+        "https://*.workdayjobs.com/*"
+      ],
+      "resources": [
+        "assets/i18n-rb8SFTAW.js",
+        "assets/i18n-rb8SFTAW.js.map",
+        "assets/store-BhrJSsSx.js",
+        "assets/store-BhrJSsSx.js.map",
+        "assets/workday.ts-BRUxKKBM.js",
+        "assets/workday.ts-BRUxKKBM.js.map"
+      ],
+      "use_dynamic_url": false
     }
-  ]
+  ],
+  "optional_permissions": [
+    "debugger"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "http://localhost/*",
+      "http://127.0.0.1/*"
+    ]
+  }
 }

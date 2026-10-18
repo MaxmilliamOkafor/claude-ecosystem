@@ -1,5 +1,8 @@
 # Workday ATS — Page Flow for Multi-Page Autofill + JD-Tailored CV / Cover Letter
 
+> **Implemented** in `claude-extension-standalone/src/workday/` (see that package's README → *Workday autopilot*).
+> End-to-end tested against a mock tenant in English and German: `npm run test:e2e`.
+
 A reference spec for driving a Workday application (`*.myworkdayjobs.com`,
 `*.wd{1..12}.myworkdayjobs.com`, `*.myworkdaysite.com`) from the browser
 extension: detect the current step, fill it, advance, recover from errors, and

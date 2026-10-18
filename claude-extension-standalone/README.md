@@ -102,6 +102,72 @@ Sonnet 4.6, Haiku 4.5, etc.). Replies stream into the side panel.
 - **Page reader** — URL + title + selection + 20k-char cleaned text snapshot injected into the system prompt.
 - **Replace selection in place** — Claude's reply can overwrite the page's selected text (content script).
 - **Zero-install path** — with Ollama running, everything works without signing up for anything.
+- **Workday autopilot** — signs in or creates the employer account, fills every application page, uploads your
+  tailored CV / cover letter, answers screening questions, and stops on Review. See below.
+
+## Workday autopilot
+
+Works on any employer's Workday careers site (`*.myworkdayjobs.com`, `*.myworkdaysite.com`, `*.myworkday.com`).
+
+**Flow:** job posting → capture JD → get tailored CV + cover letter → Apply → *Autofill with Resume* →
+sign in / create account → resume upload → My Information → My Experience → Application Questions →
+Voluntary Disclosures → Self Identify → **Review (stops — you click Submit)** → submission logged to your tracker.
+
+### Set up once (Settings → Workday · Autopilot)
+
+1. **Your documents** — paste the Google Docs link of your CV and cover letter (or upload a `.docx` / `.pdf`).
+   The CV is exported as PDF for uploads; its text feeds the profile and tailoring. The cover letter becomes the
+   base voice for every tailored letter. Google Docs import uses the Google account signed in to this browser.
+2. **Build profile from my CV** (AI) → check the JSON (dates as `YYYY-MM`) → **Save profile**.
+3. **Screening answers** — work authorisation countries, sponsorship, salary, notice period, how-you-heard.
+   **Voluntary self-ID** defaults to "decline to answer".
+4. **Accounts** — optionally one password for every Workday tenant; otherwise a strong password is generated
+   per employer and stored AES-GCM-encrypted (non-extractable key) on this device.
+5. **Consents** — tick once if you want the autopilot to tick Workday's account-terms and disclosure-terms boxes.
+
+### Use your own tailoring software
+
+The autopilot doesn't care where documents come from. Per job, in the side panel's **Workday autopilot** tab:
+
+- **Get from my tailoring tool** — set a URL in settings; the extension POSTs
+  `{ job: { reqId, title, location, description, language, url, … }, candidate: { name, email } }` and accepts
+  `{ cv: DocRef, coverLetter?: DocRef, coverLetterText?: string }`, where `DocRef` is
+  `{ fileName, base64 }`, `{ url }`, or `{ googleDocUrl }`. Optional bearer token; optional auto-request on capture.
+- **Local app hook** — an app on `http://localhost` / `127.0.0.1` can call
+  `chrome.runtime.sendMessage(EXTENSION_ID, { type: "wd:getCurrentJob" })` and
+  `{ type: "wd:attachDocs", jobKey: "current", cv, coverLetter?, coverLetterText? }`.
+- **Attach manually** — a Google Docs link or a `.pdf` / `.docx` file.
+- **Built-in tailoring** (fallback) — rewrites your bullets / summary / skills / cover letter to the JD with a
+  deterministic no-fabrication check (drops invented skills, tools and numbers), rendered as ATS-safe PDFs.
+
+Every document passes a **Workday compatibility check** before upload: file type and 5 MB limit, encrypted or
+image-only PDFs, tables / text boxes / columns / contact details in headers (DOCX), standard headings, dates,
+and JD keyword coverage. With approval required (default), nothing is uploaded until you click **Approve**.
+
+### Languages
+
+Job listings and forms in English, German, French, Spanish, Portuguese, Italian, Dutch and Polish (plus common
+Japanese / Chinese strings): page detection, buttons, Yes/No options, country names, "decline to answer" options,
+experience buckets, sensitive-question detection and submit detection are all localised. The JD language is
+auto-detected, and tailored documents are written in it by default (setting: *Language of tailored CV / cover
+letter*). Localised option lists that don't fuzzy-match (e.g. "Computer Science" vs "Informatik") are mapped by the
+AI when AI answers are on — only to an option that exists — or left for you. The built-in PDF can't embed CJK
+fonts, so for Japanese / Chinese jobs attach docs from your own tool.
+
+### What it will never do
+
+- Click **Submit** (in any language). You review and submit.
+- Guess legal / attestation / criminal-history / conflict-of-interest questions, or EEO answers — those come only
+  from your saved choices, or it pauses and asks. Answers you give when it pauses are saved for next time.
+- Bypass CAPTCHAs or email verification — it pauses for you.
+- Retry a failed sign-in more than twice (no account lockouts).
+
+### Tests
+
+```bash
+npm run test:unit   # tailoring, no-fabrication, PDF, DOCX unzip, i18n, buckets, passwords
+npm run test:e2e    # real extension in Chromium against a mock Workday tenant (English + German)
+```
 
 ## Privacy
 
@@ -119,8 +185,10 @@ claude-extension-standalone/
 ├── vite.config.ts
 ├── icons/                    ← drop PNGs here before build
 ├── src/
-│   ├── background/service-worker.ts
+│   ├── background/service-worker.ts   ← LLM relay, credential vault, external-tool hooks
 │   ├── content/content-script.ts
+│   ├── content/workday.ts            ← Workday content script (all frames on Workday hosts)
+│   ├── workday/                      ← autopilot: detect, controls, auth, steps, engine, tailoring, PDF, i18n
 │   ├── shared-ui/styles.css
 │   ├── shared/
 │   │   ├── models.ts         ← all Ollama / Claude.ai / Anthropic model entries
@@ -130,8 +198,9 @@ claude-extension-standalone/
 │   │   ├── page-reader.ts
 │   │   └── storage.ts
 │   ├── popup/
-│   ├── sidepanel/
-│   └── options/
+│   ├── sidepanel/            ← Chat + Workday autopilot tabs
+│   └── options/              ← settings incl. Workday profile, documents, accounts
+├── test/                     ← unit + Workday end-to-end tests
 └── README.md
 ```
 

@@ -3,6 +3,9 @@ import { ALL_MODELS, OLLAMA_PRESETS, CLAUDEAI_MODELS, ANTHROPIC_MODELS, type Bac
 import { ask } from "../lib/api.js";
 import { collectPageContext } from "../lib/page-reader.js";
 import { getSettings, setSettings } from "../lib/storage.js";
+import { WorkdayPanel } from "./WorkdayPanel.js";
+
+const WORKDAY_URL_RX = /^https:\/\/[^/]*(myworkdayjobs|myworkdaysite|myworkday|workdayjobs)\.com\//i;
 
 const PRESETS = [
   { key: "summarize", label: "Summarize", prompt: "Summarize this page in tight bullet points. Preserve key facts, numbers, and quotes." },
@@ -21,9 +24,12 @@ export function SidePanel() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [extraModels, setExtraModels] = useState<string[]>([]);
+  const [tab, setTab] = useState<"chat" | "workday">("chat");
 
   useEffect(() => {
     (async () => {
+      const [active] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (active?.url && WORKDAY_URL_RX.test(active.url)) setTab("workday");
       const s = await getSettings();
       setBackend(s.backend);
       setModel(s.model);
@@ -112,6 +118,20 @@ export function SidePanel() {
         <span className={`badge ${backend}`}>{backend}</span>
       </div>
 
+      <div className="row tabs" style={{ marginBottom: 10 }}>
+        <button className={tab === "chat" ? "primary" : ""} onClick={() => setTab("chat")}>
+          Chat
+        </button>
+        <button className={tab === "workday" ? "primary" : ""} onClick={() => setTab("workday")}>
+          Workday autopilot
+        </button>
+      </div>
+
+      {tab === "workday" ? (
+        <WorkdayPanel />
+      ) : (
+      <>
+
       <div className="grid" style={{ marginBottom: 10 }}>
         <div className="row">
           <select value={backend} onChange={(e) => onBackendChange(e.target.value as Backend)} style={{ flex: 1 }}>
@@ -182,6 +202,8 @@ export function SidePanel() {
           <>Calls api.anthropic.com directly. Needs a key in the options page. Subject to your account quota.</>
         )}
       </div>
+      </>
+      )}
     </div>
   );
 }
